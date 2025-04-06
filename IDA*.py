@@ -3,6 +3,7 @@ from gymnasium.envs.toy_text.frozen_lake import generate_random_map
 import time
 import imageio
 import argparse
+import matplotlib.pyplot as plt
 
 
 def expand_actions(state):
@@ -22,9 +23,6 @@ def expand_actions(state):
 def IDA_Star_Driver(start_state, goal_state, heuristic, actions):
     global cost, bound, path_history,env,frames
     path_history = []
-    print("isRandom"    ,isRandom)
-    env = gym.make('FrozenLake-v1',is_slippery=False, desc=generate_random_map(size=dim), render_mode="rgb_array") if isRandom else gym.make('FrozenLake-v1', is_slippery=False, map_name=f'{dim}x{dim}', render_mode="rgb_array")
-    env.reset()
     r = False
     bound = heuristic(start_state, goal_state)
     frames = []
@@ -35,7 +33,7 @@ def IDA_Star_Driver(start_state, goal_state, heuristic, actions):
        r, path = IDA_Star(start_state, goal_state, 0, heuristic)
        frames.append(env.render())
        env.reset()
-       print("new bound: ", bound)
+       #print("new bound: ", bound)
        
     return path
 
@@ -95,21 +93,38 @@ def main(n):
     start_state = get_start_state()
     goal_state = get_goal_state()
     actions = get_actions()
-    start_time = time.time()
     print('goal_state: ',goal_state)
-    path = IDA_Star_Driver(start_state, goal_state, heuristic, actions)
-    end_time = time.time()
+    times = []
+    for i in range(5):
+        start_time = time.time()
+        path = IDA_Star_Driver(start_state, goal_state, heuristic, actions)
+        end_time = time.time()
+        times.append(end_time - start_time)
+    average_time = sum(times)/len(times)
+    print("Average time taken: ", average_time)
     print(path)
     print(len(path))
+    # plt.figure(figsize=(8, 6))
+    # plt.plot(range(1, 6), times, marker='o')
+    # plt.axhline(y=average_time, color='r', linestyle='--', label='Average Time')
+    # plt.legend()
+    # plt.title("Time vs Runs")
+    # plt.xlabel("Run")
+    # plt.ylabel("Time (seconds)")
+    # plt.xticks(range(1, 6))
+    # plt.grid()
+    # plt.savefig(f'FrozenLake-IDA*{dim}x{dim}'+"_time_vs_runs.png")
     print("path history",path_history)
     print("Time taken: ", end_time - start_time)
     imageio.mimsave(f'FrozenLake-IDA*{dim}x{dim}.gif', frames, duration=5)
     
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--s", type=int, default=4)
+    parser.add_argument("--s", type=int, default=8)
     parser.add_argument("--r", type=bool,default=False)
     args = parser.parse_args()
     isRandom = args.r
-    n = args.s
-    main(n)
+    dim = args.s
+    env = gym.make('FrozenLake-v1',is_slippery=False, desc=generate_random_map(size=dim), render_mode="rgb_array") if isRandom else gym.make('FrozenLake-v1', is_slippery=False, map_name=f'{dim}x{dim}', render_mode="rgb_array")
+    env.reset()
+    main(dim)
