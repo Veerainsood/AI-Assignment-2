@@ -27,10 +27,10 @@ def IDA_Star_Driver(start_state, goal_state, heuristic, actions):
     env.reset()
     r = False
     bound = heuristic(start_state, goal_state)
+    frames = []
     while not r:
        cost = bound
        path_history = []
-       frames=[]
        bound = float('inf')
        r, path = IDA_Star(start_state, goal_state, 0, heuristic)
        frames.append(env.render())
@@ -42,7 +42,7 @@ def IDA_Star_Driver(start_state, goal_state, heuristic, actions):
 def IDA_Star(state, goal_state, current_cost, heuristic):
     global cost, bound, path_history,env,dim
     
-    
+    frames.append(env.render())
     if state == goal_state:
         return True, [state]
 

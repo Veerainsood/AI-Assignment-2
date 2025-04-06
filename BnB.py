@@ -2,6 +2,7 @@ import gymnasium as gym
 import time
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
+import imageio
 
 # Global variables for DFBNB and animation frames
 U = float('inf')   # Best (lowest) cost found so far (upper bound)
@@ -117,7 +118,7 @@ def main():
     print(f"[INFO] Time taken: {end_time - start_time:.2f} seconds")
     
     # Save the collected frames as a GIF.
-    save_frames_as_gif(frames, filename="dfbnb_exploration.gif")
+    imageio.mimsave(f'FrozenLake-DFBNB.gif', frames, duration=5)
     print("[INFO] Animation saved as dfbnb_exploration.gif")
     
     env.close()
