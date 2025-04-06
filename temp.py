@@ -1,6 +1,5 @@
 import numpy as np
 import gym
-import gym_TSP
 
 def total_distance(tour, dist_matrix):
     return sum(dist_matrix[tour[i], tour[i+1]] for i in range(len(tour) - 1)) + dist_matrix[tour[-1], tour[0]]

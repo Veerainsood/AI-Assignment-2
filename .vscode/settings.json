@@ -1,5 +1,0 @@
-{
-    "python.analysis.extraPaths": [
-        "./gym_TSP/gym-soccer"
-    ]
-}
