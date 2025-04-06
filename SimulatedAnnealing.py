@@ -197,11 +197,11 @@ def solve_tsp_file(path):
 
 # === Main ===
 if __name__ == "__main__":
-    tsp_paths = ["./ant_colony_opt_TSP/problems_cleaned/fl1577.tsp" ,
-                "./ant_colony_opt_TSP/problems_cleaned/eil76.tsp" ,
-                "./ant_colony_opt_TSP/problems_cleaned/ch130.tsp" ,
-                "./ant_colony_opt_TSP/problems_cleaned/pcb442.tsp" ,
-                "./ant_colony_opt_TSP/problems_cleaned/rat783.tsp" 
+    tsp_paths = ["problems_cleaned/fl1577.tsp" ,
+                "problems_cleaned/eil76.tsp" ,
+                "problems_cleaned/ch130.tsp" ,
+                "problems_cleaned/pcb442.tsp" ,
+                "problems_cleaned/rat783.tsp" 
                 ]
     
     avg_Gap = 0
