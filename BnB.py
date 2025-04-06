@@ -101,7 +101,7 @@ def DFBNB(state, path, d, env):
             d[next_state] = new_cost
             DFBNB(next_state, path + [action], d, env)
 
-def main():
+def main(save=0):
     global U, best_path, frames
     # Create the FrozenLake environment in "rgb_array" mode for recording frames.
     env = gym.make('FrozenLake-v1', desc=None, map_name="8x8", is_slippery=False, render_mode="rgb_array")
@@ -118,10 +118,38 @@ def main():
     print(f"[INFO] Time taken: {end_time - start_time:.2f} seconds")
     
     # Save the collected frames as a GIF.
-    imageio.mimsave(f'FrozenLake-DFBNB.gif', frames, duration=5)
+    if(save):
+        imageio.mimsave(f'FrozenLake-DFBNB.gif', frames, duration=5)
+
     print("[INFO] Animation saved as dfbnb_exploration.gif")
     
     env.close()
+    return end_time - start_time
+
+def timed_run(i):
+    return main(i)
+
+import matplotlib.pyplot as plt
 
 if __name__ == "__main__":
-    main()
+    times = [timed_run(0) for i in range(5)]
+    print("Run times:", times)
+    print("Average time:", sum(times) / len(times))
+    avg_times = []
+    for i in range(1, 6):  # Iterations 1 to 5
+        avg_times.append(sum(times[:i]) / len(times[:i]))
+
+    print("Run times:", times)
+    print("Average times:", avg_times)
+
+    # Plotting
+    plt.plot(range(1, 6), avg_times, marker='o')
+    plt.xlabel('Iteration')
+    plt.ylabel('Average Time (s)')
+    plt.title('Average Runtime vs Iterations (DFBNB on FrozenLake)')
+    plt.grid(True)
+    plt.tight_layout()
+    plt.savefig("avg_time_vs_iterations.png")
+    print("Plot saved as avg_time_vs_iterations.png")
+
+        

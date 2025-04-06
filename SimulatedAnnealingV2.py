@@ -92,7 +92,7 @@ def three_opt(tour, coords):
     return best
 
 # === Step 5: Simulated Annealing with Stats ===
-def simulated_annealing_with_gif(coords, initial_tour, max_time_sec=180, save_gif="tour_evolution.gif"):
+def simulated_annealing_with_gif(coords, initial_tour, max_time_sec=180, save_gif="tour_evolution.gif",plot=True):
     current_tour = initial_tour
     current_cost = total_distance(current_tour, coords)
     best_tour = list(current_tour)
@@ -136,12 +136,12 @@ def simulated_annealing_with_gif(coords, initial_tour, max_time_sec=180, save_gi
 
         temperature *= alpha
 
-        if iteration % 1000 == 0 or current_cost < best_cost:
+        if (iteration % 1000 == 0 or current_cost < best_cost) and plot:
             print(f"[Iter {iteration}] Temp: {temperature:.2f}, Best: {best_cost:.2f}")
             tour_snapshots.append(list(best_tour))
             # Also log up to this step so plots align
-
-    make_combined_gif(coords, tour_snapshots, cost_list, temperature_list, acceptance_prob_list, save_gif)
+    if plot:
+        make_combined_gif(coords, tour_snapshots, cost_list, temperature_list, acceptance_prob_list, save_gif)
     
     # ✅ Return all values needed
     return best_tour, best_cost, cost_list, temperature_list, acceptance_prob_list
@@ -225,7 +225,7 @@ def save_summary_plot(costs, temps, probs, filename):
 
 # === Step 8: Run Everything ===
 best_known = 0
-def solve_tsp_file(path):
+def solve_tsp_file(path,plot=True):
     global best_known
 
     print(f"Loading: {path}")
@@ -241,9 +241,10 @@ def solve_tsp_file(path):
     summary_plot_name = f"{base_name}_summary.png"
 
     best_tour, best_cost, costs, temps, probs = simulated_annealing_with_gif(
-        coords, initial_tour, save_gif=gif_name
+        coords, initial_tour, save_gif=gif_name,plot=plot
     )
-    save_summary_plot(costs, temps, probs, summary_plot_name)
+    if plot:
+        save_summary_plot(costs, temps, probs, summary_plot_name)
 
     print("\n=== Final Result ===")
     print(f"Best tour distance found: {best_cost:.2f}")
@@ -262,6 +263,25 @@ if __name__ == "__main__":
     
     avg_Gap = 0
     for path in tsp_paths:
+        if(path == "problems_cleaned/eil76.tsp"):
+            times = []
+            avg_times = []
+            for i in range(5):
+                start = time.time()
+                _, best_cost = solve_tsp_file(path,plot=False)
+                stop = time.time()
+                times.append(stop-start)
+                avg_times.append(sum(times)/len(times))
+            plt.figure(figsize=(8, 4))
+            plt.plot(range(1, 6), avg_times, marker='o', linestyle='-', color='blue')
+            plt.title("Average Time vs Iteration (eil76.tsp)")
+            plt.xlabel("Run Number")
+            plt.ylabel("Average Time (seconds)")
+            plt.grid(True)
+            plt.tight_layout()
+            plt.savefig("S_A_avg_time_vs_iterations.png")
+            solve_tsp_file(path)
+
         _, best_cost = solve_tsp_file(path)
         avg_Gap += ((best_cost - best_known) / best_known) * 100
 
