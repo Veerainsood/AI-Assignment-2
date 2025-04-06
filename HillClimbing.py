@@ -3,6 +3,7 @@ import time
 import matplotlib.pyplot as plt
 import imageio
 import argparse
+import os
 
 def parse_tsp_file(filepath):
     cities = []
@@ -106,6 +107,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--f" ,type=int, default=1)
     args = parser.parse_args()
+    os.makedirs("./ignore", exist_ok=True)
     files = ["./problems_cleaned/ch130.tsp","./problems_cleaned/eil76.tsp","./problems_cleaned/d198.tsp/","./problems_cleaned/kroA100.tsp"]
 
     # Parse TSP file and plot cities
